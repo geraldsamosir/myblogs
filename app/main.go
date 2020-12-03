@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 
+	"github.com/geraldsamosir/myblogs/helper"
 	"github.com/geraldsamosir/myblogs/infrastructure/database/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -34,6 +36,7 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(middleware.Gzip())
 	e.Use(middleware.Secure())
+	//e.Use(middleware.Static("public/build"))
 	// middL := _articleHttpDeliveryMiddleware.InitMiddleware()
 	// e.Use(middL.CORS)
 	// authorRepo := _authorRepo.NewMysqlAuthorRepository(dbConn)
@@ -42,6 +45,14 @@ func main() {
 	// timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 	// au := _articleUcase.NewArticleUsecase(ar, authorRepo, timeoutContext)
 	// _articleHttpDelivery.NewArticleHandler(e, au)
+	fs := http.FileServer(http.Dir("public/build"))
+	e.GET("/*", echo.WrapHandler(fs))
+
+	api := e.Group("/api")
+	message := helper.DefaultMessage{Message: "helo this is root api"}
+	api.GET("/", func(ctx echo.Context) error {
+		return helper.Response(http.StatusOK, message, nil, ctx)
+	})
 
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }
