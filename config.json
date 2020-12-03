@@ -1,0 +1,19 @@
+{
+    "JWT_TOKEN_TTL": "__JWT_TOKEN_TTL__",
+    "JWT_ISSUER": "__JWT_ISSUER__",
+    "debug": true,
+    "server": {
+      "address": ":9092"
+    },
+    "context":{
+      "timeout":2
+    },
+    "database": {      
+        "DB_HOST": "localhost",
+        "DB_PORT": "3306",
+        "DB_USER": "root",
+        "DB_PASS": "admin",
+        "DB_NAME": "myblogs"
+    },
+    "location": "Asia/Jakarta"
+}
