@@ -1,9 +1,10 @@
-addmodule github.com/geraldsamosir/myblogs
+module myblog
 
 go 1.13
 
 require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
