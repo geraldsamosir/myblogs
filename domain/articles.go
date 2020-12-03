@@ -11,7 +11,7 @@ type Article struct {
 	Creator   uint   `gorm:"not null;index" json:"creator"`
 	BannerUrl string `json:"bannerUrl"`
 	Category  uint   `gorm:"not null;index" json:"Article"`
-	Slug      string `json:"-" validate:"required"`
+	Slug      string `json:"slug" validate:"required"`
 }
 type ArticleUsecase interface {
 }
