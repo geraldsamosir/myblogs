@@ -3,10 +3,10 @@ package mysql
 import (
 	"log"
 
+	"github.com/geraldsamosir/myblogs/domain"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // dialect
 
-	//"github.com/geraldsamosir/myblogs/domain"
 	"github.com/spf13/viper"
 )
 
@@ -32,8 +32,14 @@ func (database *Database) DatabaseInit() *gorm.DB {
 		panic(err)
 	}
 	log.Println("database  connect")
-	// db.AutoMigrate(&domain.Article{})
-	//	db.AutoMigrate(&models.Book{})
+
+	// do migarion table in here
+
+	db.AutoMigrate(&domain.User{})
+	db.AutoMigrate(&domain.Article{})
+
+	// add relation
+	db.Model(&domain.Article{}).AddForeignKey("creator", "users(id)", "RESTRICT", "RESTRICT")
 
 	return db
 }
