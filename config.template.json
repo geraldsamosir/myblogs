@@ -1,0 +1,19 @@
+{
+    "JWT_TOKEN_TTL": "__JWT_TOKEN_TTL__",
+    "JWT_ISSUER": "__JWT_ISSUER__",
+    "debug": true,
+    "server": {
+      "address": ":9092"
+    },
+    "context":{
+      "timeout":2
+    },
+    "database": {              
+        "DB_HOST": "__DB_HOST__",
+        "DB_PORT": "__DB_PORT__",
+        "DB_USER": "__DB_USER__",
+        "DB_PASS": "__DB_PASS__",
+        "DB_NAME": "__DB_NAME__"
+    },
+    "location": "Asia/Jakarta"
+}
