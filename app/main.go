@@ -7,6 +7,7 @@ import (
 
 	"github.com/geraldsamosir/myblogs/infrastructure/database/mysql"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/spf13/viper"
 )
 
@@ -30,6 +31,9 @@ func main() {
 	db := database.DatabaseInit()
 	fmt.Println(db)
 	e := echo.New()
+	e.Use(middleware.CORS())
+	e.Use(middleware.Gzip())
+	e.Use(middleware.Secure())
 	// middL := _articleHttpDeliveryMiddleware.InitMiddleware()
 	// e.Use(middL.CORS)
 	// authorRepo := _authorRepo.NewMysqlAuthorRepository(dbConn)
