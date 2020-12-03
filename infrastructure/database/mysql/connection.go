@@ -37,9 +37,12 @@ func (database *Database) DatabaseInit() *gorm.DB {
 
 	db.AutoMigrate(&domain.User{})
 	db.AutoMigrate(&domain.Article{})
+	db.AutoMigrate(&domain.Role{})
+	db.AutoMigrate(&domain.Category{})
 
 	// add relation
-	db.Model(&domain.Article{}).AddForeignKey("creator", "users(id)", "RESTRICT", "RESTRICT")
-
+	db.Model(&domain.Article{}).AddForeignKey("creator", "users(id)", "CASCADE", "CASCADE")
+	db.Model(&domain.User{}).AddForeignKey("role", "roles(id)", "CASCADE", "CASCADE")
+	db.Model(&domain.Article{}).AddForeignKey("category", "categories(id)", "CASCADE", "CASCADE")
 	return db
 }
