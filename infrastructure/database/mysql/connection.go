@@ -1,11 +1,13 @@
 package mysql
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/geraldsamosir/myblogs/domain"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql" // dialect
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	"github.com/spf13/viper"
 )
@@ -25,9 +27,18 @@ func (database *Database) DatabaseInit() *gorm.DB {
 	database.User = viper.GetString("database.DB_USER")
 	database.Password = viper.GetString("database.DB_PASS")
 	database.Name = viper.GetString("database.DB_NAME")
-	database.url = database.User + ":" + database.Password + "@(" + database.Host + ":" + database.Port + ")/" + database.Name + "?charset=utf8&parseTime=True&loc=Local"
+	//database.url = database.User + ":" + database.Password + "@(" + database.Host + ":" + database.Port + ")/" + database.Name + "?charset=utf8&parseTime=True&loc=Local"
+	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", database.User, database.Password, database.Host, database.Port, database.Name)
+	dsn := fmt.Sprintf("%s?%s", connection)
 
-	db, err := gorm.Open("mysql", database.url)
+	dbConn, err := sql.Open(`mysql`, dsn)
+
+	db, err := gorm.Open(mysql.New(mysql.Config{
+		Conn: dbConn,
+	}), &gorm.Config{})
+	//db, err := gorm.Open("mysql", database.url)
+	db.Set("gorm:table_options", "ENGINE=InnoDB")
+	// db.Set("gorm:table_options", "collation_connection=utf8_general_ci")
 	if err != nil {
 		panic(err)
 	}
@@ -35,14 +46,14 @@ func (database *Database) DatabaseInit() *gorm.DB {
 
 	// do migarion table in here
 
-	db.AutoMigrate(&domain.User{})
-	db.AutoMigrate(&domain.Article{})
-	db.AutoMigrate(&domain.Role{})
 	db.AutoMigrate(&domain.Category{})
+	db.AutoMigrate(&domain.Article{})
+	db.AutoMigrate(&domain.User{})
+	db.AutoMigrate(&domain.Role{})
 
 	// add relation
-	db.Model(&domain.Article{}).AddForeignKey("creator", "users(id)", "CASCADE", "CASCADE")
-	db.Model(&domain.User{}).AddForeignKey("role", "roles(id)", "CASCADE", "CASCADE")
-	db.Model(&domain.Article{}).AddForeignKey("category", "categories(id)", "CASCADE", "CASCADE")
+	// db.Model(&domain.Article{}).AddForeignKey("creator", "users(id)", "CASCADE", "CASCADE")
+	// db.Model(&domain.User{}).AddForeignKey("role", "roles(id)", "CASCADE", "CASCADE")
+	// db.Model(&domain.Article{}).AddForeignKey("category", "categories(id)", "CASCADE", "CASCADE")
 	return db
 }

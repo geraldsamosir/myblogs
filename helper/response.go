@@ -11,7 +11,7 @@ type res struct {
 }
 
 type DefaultMessage struct {
-	Message string `json:"message"`
+	Message string
 }
 
 func Response(httpStatus int, data interface{}, error interface{}, ctx echo.Context) error {

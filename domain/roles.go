@@ -1,11 +1,14 @@
 package domain
 
 import (
-	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type Role struct {
-	gorm.Model
-	RoleName string `gorm:"size:255;not null" json:"roleName"`
-	Users []User `json:"users"`
-} 
+	ID        uint `gorm:"primary_key" query:"id"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time `sql:"index"`
+	RoleName  string     `gorm:"size:255;not null" json:"roleName" query:"roleName"`
+	User      []*User    `gorm:"-"`
+}
