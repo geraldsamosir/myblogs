@@ -22,7 +22,7 @@ type Article struct {
 }
 type ArticleUsecase interface {
 	FindAll(ctx context.Context, page int64, limmit int64, filter Article) ([]Article, error)
-	CountAll(ctx context.Context, skip int64, limmit int64, filter Article) (res int64, err error)
+	CountPage(ctx context.Context, skip int64, limmit int64, filter Article) (res int64, err error)
 	//Filter(ctx context.Context, filter Article) (Article, error)
 	// Update(ctx context.Context, id int64, ar *Article) error
 	// Create(context.Context, *Article) error

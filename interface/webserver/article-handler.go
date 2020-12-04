@@ -9,14 +9,13 @@ import (
 	"github.com/geraldsamosir/myblogs/helper"
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
-
 )
 
 type ArticleHandler struct {
 	ArticleUsecase domain.ArticleUsecase
 }
 
-func NewArticleHandler (e *echo.Group, ArtUseCase domain.ArticleUsecase){
+func NewArticleHandler(e *echo.Group, ArtUseCase domain.ArticleUsecase) {
 	handler := &ArticleHandler{
 		ArticleUsecase: ArtUseCase,
 	}
@@ -24,8 +23,7 @@ func NewArticleHandler (e *echo.Group, ArtUseCase domain.ArticleUsecase){
 
 }
 
-
-func (Ah * ArticleHandler) FindAll(c echo.Context) error {
+func (Ah *ArticleHandler) FindAll(c echo.Context) error {
 	numS := c.QueryParam("page")
 	num, _ := strconv.Atoi(numS)
 	limmits := c.QueryParam("limit")
@@ -34,27 +32,25 @@ func (Ah * ArticleHandler) FindAll(c echo.Context) error {
 	// filter allow
 	ID64, _ := strconv.ParseUint(c.QueryParam("id"), 0, 32)
 	ID := uint(ID64)
-	CategoryID64, _:=strconv.ParseUint(c.QueryParam("categoryId"), 0, 32)
+	CategoryID64, _ := strconv.ParseUint(c.QueryParam("categoryId"), 0, 32)
 	CategoryID := uint(CategoryID64)
-	CreatorID64, _:=strconv.ParseUint(c.QueryParam("creatorId"), 0, 32)
+	CreatorID64, _ := strconv.ParseUint(c.QueryParam("creatorId"), 0, 32)
 	CreatorID := uint(CreatorID64)
 
-
 	art := domain.Article{
-		ID: ID,
-		Title: c.QueryParam("title"),
+		ID:         ID,
+		Title:      c.QueryParam("title"),
 		CategoryID: CategoryID,
-		CreatorID: CreatorID,
+		CreatorID:  CreatorID,
 	}
 
-
-	listAr, err := Ah.ArticleUsecase.FindAll(ctx,  int64(num), int64(limmit), art)
+	listAr, err := Ah.ArticleUsecase.FindAll(ctx, int64(num), int64(limmit), art)
 	if err != nil {
 		log.Println(err)
 		return helper.ResponseList(getStatusCode(err), nil, err.Error(), 0, 0, c)
 	}
 
-	countAr , err := Ah.ArticleUsecase.CountAll(ctx,  int64(num), int64(limmit), art)
+	countAr, err := Ah.ArticleUsecase.CountPage(ctx, int64(num), int64(limmit), art)
 	if err != nil {
 		log.Println(err)
 		return helper.ResponseList(getStatusCode(err), nil, err.Error(), 0, 0, c)
@@ -64,7 +60,7 @@ func (Ah * ArticleHandler) FindAll(c echo.Context) error {
 		num = 1
 	}
 
-	return helper.ResponseList(http.StatusOK, listAr, nil, num, countAr, c)
+	return helper.ResponseList(http.StatusOK, listAr, nil, num, (countAr), c)
 }
 
 func getStatusCode(err error) int {

@@ -20,33 +20,30 @@ func NewArticleUsecase(art domain.ArticleRepository, timeout time.Duration) doma
 }
 
 func (art *articleUsecase) FindAll(c context.Context, page int64, limmit int64, filter domain.Article) (res []domain.Article, err error) {
-	skip := page
-	if skip <= 0 {
-		skip = 0
-	} else {
-		skip = skip*limmit - 1
-	}
-
-	if limmit == 0 {
-		limmit = 10
-	}
-
 	ctx, cancel := context.WithTimeout(c, art.contextTimeout)
 	defer cancel()
 
-	res, err = art.articleRepo.FindAll(ctx, skip, limmit, filter)
+	res, err = art.articleRepo.FindAll(ctx, page, limmit, filter)
 	if err != nil {
 		return nil, err
 	}
 	return
 }
 
-func (art *articleUsecase) CountAll(c context.Context, skip int64, limmit int64, filter domain.Article) (res int64, err error) {
+func (art *articleUsecase) CountPage(c context.Context, skip int64, limmit int64, filter domain.Article) (res int64, err error) {
 	ctx, cancel := context.WithTimeout(c, art.contextTimeout)
 	defer cancel()
-	res, err = art.articleRepo.CountAll(ctx, skip, limmit, filter)
+	if limmit <= 0 {
+		limmit = 10
+	}
+	countAll, err := art.articleRepo.CountAll(ctx, skip, limmit, filter)
 	if err != nil {
 		return 0, err
+	}
+	if (countAll / limmit) == 0 {
+		res = 1
+	} else {
+		res = countAll / limmit
 	}
 	return
 
