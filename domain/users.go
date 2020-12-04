@@ -14,6 +14,6 @@ type User struct {
 	UserName  string     `gorm:"size:30;not null " json:"userName" query:"username"`
 	Password  string     `gorm:"size:255;not null" json:"-"`
 	Articles  []Article  `gorm:"-"; json:"articles"`
-	RoleID    uint       `gorm:"not null;index" json:"role" query:"role"`
-	Role      Role       `gorm:"foreignKey:RoleID;references:id"`
+	RoleID    uint       `gorm:"not null;index" json:"role" query:"roleID"`
+	Role      Role       `gorm:"foreignKey:RoleID;references:ID"`
 }

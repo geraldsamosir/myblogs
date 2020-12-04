@@ -36,9 +36,9 @@ func (database *Database) DatabaseInit() *gorm.DB {
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		Conn: dbConn,
 	}), &gorm.Config{})
-	//db, err := gorm.Open("mysql", database.url)
 	db.Set("gorm:table_options", "ENGINE=InnoDB")
-	// db.Set("gorm:table_options", "collation_connection=utf8_general_ci")
+	db.Set("gorm:table_options", "collation_connection=utf8_general_ci")
+	db.Set("gorm:auto_preload", true)
 	if err != nil {
 		panic(err)
 	}

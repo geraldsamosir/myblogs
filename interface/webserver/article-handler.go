@@ -31,20 +31,40 @@ func (Ah * ArticleHandler) FindAll(c echo.Context) error {
 	limmits := c.QueryParam("limit")
 	limmit, _ := strconv.Atoi(limmits)
 	ctx := c.Request().Context()
+	// filter allow
+	ID64, _ := strconv.ParseUint(c.QueryParam("id"), 0, 32)
+	ID := uint(ID64)
+	CategoryID64, _:=strconv.ParseUint(c.QueryParam("categoryId"), 0, 32)
+	CategoryID := uint(CategoryID64)
+	CreatorID64, _:=strconv.ParseUint(c.QueryParam("creatorId"), 0, 32)
+	CreatorID := uint(CreatorID64)
 
-	if num <= 0 {
-		num = 0 
-	} else {
-		num  = num * limmit -1
+
+	art := domain.Article{
+		ID: ID,
+		Title: c.QueryParam("title"),
+		CategoryID: CategoryID,
+		CreatorID: CreatorID,
 	}
 
 
-	listAr, err := Ah.ArticleUsecase.FindAll(ctx,  int64(num), int64(limmit))
+	listAr, err := Ah.ArticleUsecase.FindAll(ctx,  int64(num), int64(limmit), art)
 	if err != nil {
 		log.Println(err)
-		return helper.Response(getStatusCode(err), nil, err.Error(), c)
+		return helper.ResponseList(getStatusCode(err), nil, err.Error(), 0, 0, c)
 	}
-	return helper.Response(http.StatusOK, listAr, nil, c)
+
+	countAr , err := Ah.ArticleUsecase.CountAll(ctx,  int64(num), int64(limmit), art)
+	if err != nil {
+		log.Println(err)
+		return helper.ResponseList(getStatusCode(err), nil, err.Error(), 0, 0, c)
+	}
+
+	if num <= 0 {
+		num = 1
+	}
+
+	return helper.ResponseList(http.StatusOK, listAr, nil, num, countAr, c)
 }
 
 func getStatusCode(err error) int {
