@@ -24,7 +24,7 @@ func (ArtRepo *ArticlesMysql) FindAll(ctx context.Context, skip int64, limmit in
 }
 
 func (ArtRepo *ArticlesMysql) CountAll(ctx context.Context, skip int64, limmit int64, filter domain.Article) (res int64, err error) {
-	if err = ArtRepo.DB.Model(&domain.Article{}).Where(filter).Count(&res).Error; err != nil {
+	if err = ArtRepo.DB.WithContext(ctx).Model(&domain.Article{}).Where(filter).Count(&res).Error; err != nil {
 		return 0, err
 	}
 	return
