@@ -14,7 +14,7 @@ type User struct {
 	DeletedAt gorm.DeletedAt `sql:"index"`
 	FirstName string         `gorm:"size:255;not null" json:"firstName"`
 	LastName  string         `gorm:"size:255" json:"lastName"`
-	UserName  string         `gorm:"size:30;not null;unique;index " json:"userName" validate:"required" query:"username"`
+	UserName  string         `gorm:"size:30;unique;not null;index " json:"userName" validate:"required" query:"username"`
 	Password  string         `gorm:"size:255;not null" json:"password" validate:"required"`
 	Articles  []*Article     `gorm:"foreignKey:CreatorID" json:"articles"`
 	RoleID    uint           `gorm:"not null;index" json:"roleId" validate:"required" query:"roleID"`
@@ -28,7 +28,7 @@ type UserResponse struct {
 	DeletedAt gorm.DeletedAt `sql:"index"`
 	FirstName string         `gorm:"size:255;not null" json:"firstName"`
 	LastName  string         `gorm:"size:255" json:"lastName"`
-	UserName  string         `gorm:"size:30;not null;unique " json:"userName" validate:"required" query:"username"`
+	UserName  string         `gorm:"size:30;unique;not null;unique " json:"userName" validate:"required" query:"username"`
 	Password  string         `gorm:"size:255;not null" json:"-" validate:"required"`
 	Articles  []Article      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;foreignKey:CreatorID" json:"articles"`
 	RoleID    uint           `gorm:"not null;index" json:"roleId" validate:"required" query:"roleID"`
