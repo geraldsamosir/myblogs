@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -70,8 +69,6 @@ func (auth *Auth) MiddlewareAuth(next echo.HandlerFunc) echo.HandlerFunc {
 
 			splitToken = strings.Split(authorizationHeader, "Bearer ")
 			reqToken := splitToken[len(splitToken)-1]
-			log.Println("sini", reqToken)
-
 			token, err := jwt.Parse(reqToken, func(token *jwt.Token) (interface{}, error) {
 				return []byte(viper.GetString("JWT_SECRET")), nil
 			})
