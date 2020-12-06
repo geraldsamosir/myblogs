@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/geraldsamosir/myblogs/domain"
 	"github.com/geraldsamosir/myblogs/helper"
@@ -87,6 +88,8 @@ func (Ah *ArticleHandler) Create(c echo.Context) error {
 	var article domain.Article
 	ctx := c.Request().Context()
 	err := c.Bind(&article)
+	currentTime := time.Now().Format("01-02-2006")
+	article.Slug = article.Title + "-" + currentTime
 	if err != nil {
 		return helper.Response(http.StatusUnprocessableEntity, nil, nil, c)
 	}

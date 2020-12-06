@@ -3,6 +3,7 @@ package mysql
 import (
 	"fmt"
 	"log"
+	"net/url"
 
 	"github.com/geraldsamosir/myblogs/domain"
 	"gorm.io/driver/mysql"
@@ -18,6 +19,7 @@ type Database struct {
 	Password string
 	Name     string
 	url      string
+	loc      string
 }
 
 func (database *Database) DatabaseInit() *gorm.DB {
@@ -26,9 +28,13 @@ func (database *Database) DatabaseInit() *gorm.DB {
 	database.User = viper.GetString("database.DB_USER")
 	database.Password = viper.GetString("database.DB_PASS")
 	database.Name = viper.GetString("database.DB_NAME")
+	database.loc = viper.GetString("location")
 
-	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", database.User, database.Password, database.Host, database.Port, database.Name)
-	dsn := connection
+	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", database.User, database.Password, database.Host, database.Port, database.Name)
+	val := url.Values{}
+	val.Add("parseTime", "1")
+	val.Add("loc", "Asia/Jakarta")
+	dsn := fmt.Sprintf("%s?%s", connection, val.Encode())
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 

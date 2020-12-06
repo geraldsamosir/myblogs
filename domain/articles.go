@@ -19,7 +19,7 @@ type Article struct {
 	BannerUrl  string         `json:"bannerUrl"`
 	CategoryID uint           `gorm:"not null;index" json:"categoryID" validate:"required"  query:"category"`
 	Categories Category       `gorm:"foreignKey:CategoryID;references:id"`
-	Slug       string         `json:"slug" validate:"required" query:"slug"`
+	Slug       string         `json:"slug" query:"slug"`
 }
 type ArticleUsecase interface {
 	FindAll(ctx context.Context, page int64, limmit int64, filter Article) ([]Article, error)
