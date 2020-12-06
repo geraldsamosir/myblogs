@@ -48,3 +48,47 @@ func (art *articleUsecase) CountPage(c context.Context, skip int64, limmit int64
 	return
 
 }
+
+func (art *articleUsecase) GetByID(c context.Context, id int64) (article domain.Article, err error) {
+	ctx, cancel := context.WithTimeout(c, art.contextTimeout)
+	defer cancel()
+
+	article, err = art.articleRepo.GetByID(ctx, id)
+	if err != nil {
+		return article, err
+	}
+	return article, nil
+}
+
+func (art *articleUsecase) Create(c context.Context, artc *domain.Article) (err error) {
+	ctx, cancel := context.WithTimeout(c, art.contextTimeout)
+	defer cancel()
+	err = art.articleRepo.Store(ctx, artc)
+	if err != nil {
+		return err
+	}
+	return
+
+}
+
+func (art *articleUsecase) Update(ctx context.Context, id int64, artc *domain.Article) (err error) {
+	ctx, cancel := context.WithTimeout(ctx, art.contextTimeout)
+	defer cancel()
+	err = art.articleRepo.Update(ctx, id, artc)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (art *articleUsecase) DeleteByID(c context.Context, id int64) (message string, err error) {
+	ctx, cancel := context.WithTimeout(c, art.contextTimeout)
+	defer cancel()
+
+	err = art.articleRepo.DeleteByID(ctx, id)
+	if err != nil {
+		return "", err
+	}
+	message = "success delete article "
+	return message, err
+}
