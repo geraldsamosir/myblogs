@@ -21,7 +21,7 @@ func NewArticleUsecase(art domain.ArticleRepository, timeout time.Duration) doma
 
 //this method run when web server not strating
 func init() {
-	// log.Println("initiallize")
+	// logrus.Info("initiallize")
 }
 
 func (art *articleUsecase) FindAll(c context.Context, page int64, limmit int64, filter domain.Article) (res []domain.Article, err error) {

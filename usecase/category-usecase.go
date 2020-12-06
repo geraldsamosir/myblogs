@@ -21,7 +21,7 @@ func NewcategoryUsecase(cat domain.CategoryRepository, timeout time.Duration) do
 
 //this method run when web server not strating
 func init() {
-	// log.Println("initiallize")
+	// logrus.Info("initiallize")
 }
 
 func (cat *categoryUsecase) FindAll(c context.Context, page int64, limmit int64, filter domain.Category) (res []domain.Category, err error) {

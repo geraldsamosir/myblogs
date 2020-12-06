@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/geraldsamosir/myblogs/domain"
-	"github.com/labstack/gommon/log"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -69,7 +69,7 @@ func (CatRepo *CategoryMsql) Update(ctx context.Context, id int64, artc *domain.
 func (CatRepo *CategoryMsql) DeleteByID(ctx context.Context, id int64) (err error) {
 	artc := CatRepo.DB.WithContext(ctx).Where("id = ?", id).Delete(&domain.Category{})
 	if err = artc.Error; err != nil {
-		log.Printf("err", err)
+		logrus.Error("err", err)
 		return err
 	}
 	return

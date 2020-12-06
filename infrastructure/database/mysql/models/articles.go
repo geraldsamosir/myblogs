@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/geraldsamosir/myblogs/domain"
-	"github.com/labstack/gommon/log"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -69,7 +69,7 @@ func (ArtRepo *ArticlesMysql) Update(ctx context.Context, id int64, artc *domain
 func (ArtRepo *ArticlesMysql) DeleteByID(ctx context.Context, id int64) (err error) {
 	artc := ArtRepo.DB.WithContext(ctx).Where("id = ?", id).Delete(&domain.Article{})
 	if err = artc.Error; err != nil {
-		log.Printf("err", err)
+		logrus.Error("err", err)
 		return err
 	}
 	return

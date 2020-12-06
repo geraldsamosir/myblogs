@@ -2,10 +2,10 @@ package mysql
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 
 	"github.com/geraldsamosir/myblogs/domain"
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
@@ -44,7 +44,7 @@ func (database *Database) DatabaseInit() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	log.Println("database  connect")
+	logrus.Info("database  connect")
 
 	// do migarion table in here
 

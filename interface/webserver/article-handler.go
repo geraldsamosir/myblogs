@@ -1,7 +1,6 @@
 package webserver
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -9,6 +8,7 @@ import (
 	"github.com/geraldsamosir/myblogs/domain"
 	"github.com/geraldsamosir/myblogs/helper"
 	"github.com/labstack/echo"
+	"github.com/sirupsen/logrus"
 )
 
 var validation helper.ValidationRequest
@@ -52,13 +52,13 @@ func (Ah *ArticleHandler) FindAll(c echo.Context) error {
 
 	listAr, err := Ah.ArticleUsecase.FindAll(ctx, int64(num), int64(limmit), art)
 	if err != nil {
-		log.Println(err)
+		logrus.Error(err)
 		return helper.ResponseList(GetStatusCode(err), nil, err.Error(), 0, 0, c)
 	}
 
 	countAr, err := Ah.ArticleUsecase.CountPage(ctx, int64(num), int64(limmit), art)
 	if err != nil {
-		log.Println(err)
+		logrus.Error(err)
 		return helper.ResponseList(GetStatusCode(err), nil, err.Error(), 0, 0, c)
 	}
 

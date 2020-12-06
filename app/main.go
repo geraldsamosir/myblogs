@@ -1,10 +1,9 @@
 package main
 
 import (
-	"log"
-
 	"github.com/geraldsamosir/myblogs/infrastructure/database/mysql"
 	"github.com/geraldsamosir/myblogs/interface/webserver"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -18,7 +17,7 @@ func init() {
 	}
 
 	if viper.GetBool(`debug`) {
-		log.Println("Service RUN on DEBUG mode")
+		logrus.Info("Service RUN on DEBUG mode")
 	}
 }
 
