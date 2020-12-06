@@ -4,32 +4,29 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/geraldsamosir/myblogs/domain"
 	"github.com/geraldsamosir/myblogs/helper"
 	"github.com/labstack/echo"
 )
 
-var validation helper.ValidationRequest
-
-type ArticleHandler struct {
-	ArticleUsecase domain.ArticleUsecase
+type CategoryHandler struct {
+	CategoryUsecase domain.CategoryUsecase
 }
 
-func NewArticleHandler(e *echo.Group, ArtUseCase domain.ArticleUsecase) {
-	handler := &ArticleHandler{
-		ArticleUsecase: ArtUseCase,
+func NewCategoryHandler(e *echo.Group, ArtUseCase domain.CategoryUsecase) {
+	handler := &CategoryHandler{
+		CategoryUsecase: ArtUseCase,
 	}
-	e.GET("/articles", handler.FindAll)
-	e.GET("/articles/:id", handler.GetByID)
-	e.POST("/articles", handler.Create)
-	e.PUT("/articles/:id", handler.Update)
-	e.DELETE("/articles/:id", handler.DeleteByID)
+	e.GET("/Categories", handler.FindAll)
+	e.GET("/Categories/:id", handler.GetByID)
+	e.POST("/Categories", handler.Create)
+	e.PUT("/Categories/:id", handler.Update)
+	e.DELETE("/Categories/:id", handler.DeleteByID)
 
 }
 
-func (Ah *ArticleHandler) FindAll(c echo.Context) error {
+func (Ah *CategoryHandler) FindAll(c echo.Context) error {
 	numS := c.QueryParam("page")
 	num, _ := strconv.Atoi(numS)
 	limmits := c.QueryParam("limit")
@@ -38,25 +35,19 @@ func (Ah *ArticleHandler) FindAll(c echo.Context) error {
 	// filter allow
 	ID64, _ := strconv.ParseUint(c.QueryParam("id"), 0, 32)
 	ID := uint(ID64)
-	CategoryID64, _ := strconv.ParseUint(c.QueryParam("categoryId"), 0, 32)
-	CategoryID := uint(CategoryID64)
-	CreatorID64, _ := strconv.ParseUint(c.QueryParam("creatorId"), 0, 32)
-	CreatorID := uint(CreatorID64)
 
-	art := domain.Article{
-		ID:         ID,
-		Title:      c.QueryParam("title"),
-		CategoryID: CategoryID,
-		CreatorID:  CreatorID,
+	art := domain.Category{
+		ID:           ID,
+		CategoryName: c.QueryParam("categoryName"),
 	}
 
-	listAr, err := Ah.ArticleUsecase.FindAll(ctx, int64(num), int64(limmit), art)
+	listAr, err := Ah.CategoryUsecase.FindAll(ctx, int64(num), int64(limmit), art)
 	if err != nil {
 		log.Println(err)
 		return helper.ResponseList(GetStatusCode(err), nil, err.Error(), 0, 0, c)
 	}
 
-	countAr, err := Ah.ArticleUsecase.CountPage(ctx, int64(num), int64(limmit), art)
+	countAr, err := Ah.CategoryUsecase.CountPage(ctx, int64(num), int64(limmit), art)
 	if err != nil {
 		log.Println(err)
 		return helper.ResponseList(GetStatusCode(err), nil, err.Error(), 0, 0, c)
@@ -69,39 +60,37 @@ func (Ah *ArticleHandler) FindAll(c echo.Context) error {
 	return helper.ResponseList(http.StatusOK, listAr, nil, num, (countAr), c)
 }
 
-func (Ah *ArticleHandler) GetByID(c echo.Context) error {
+func (Ah *CategoryHandler) GetByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ctx := c.Request().Context()
-	article, err := Ah.ArticleUsecase.GetByID(ctx, int64(id))
+	Category, err := Ah.CategoryUsecase.GetByID(ctx, int64(id))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}
 	//handle notfound
-	if article.ID == 0 {
+	if Category.ID == 0 {
 		return helper.Response(http.StatusNotFound, nil, nil, c)
 	}
-	return helper.Response(GetStatusCode(err), article, nil, c)
+	return helper.Response(GetStatusCode(err), Category, nil, c)
 }
 
-func (Ah *ArticleHandler) Create(c echo.Context) error {
-	var article domain.Article
+func (Ah *CategoryHandler) Create(c echo.Context) error {
+	var Category domain.Category
 	ctx := c.Request().Context()
-	err := c.Bind(&article)
-	currentTime := time.Now().Format("01-02-2006")
-	article.Slug = article.Title + "-" + currentTime
+	err := c.Bind(&Category)
 	if err != nil {
 		return helper.Response(http.StatusUnprocessableEntity, nil, nil, c)
 	}
 
-	if newErr := validation.ValidateHandling(article); newErr != nil {
+	if newErr := validation.ValidateHandling(Category); newErr != nil {
 		return helper.Response(http.StatusBadRequest, nil, newErr, c)
 	}
-	err = Ah.ArticleUsecase.Create(ctx, &article)
+	err = Ah.CategoryUsecase.Create(ctx, &Category)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}
 
-	artc, err := Ah.ArticleUsecase.GetByID(ctx, int64(article.ID))
+	artc, err := Ah.CategoryUsecase.GetByID(ctx, int64(Category.ID))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}
@@ -110,21 +99,21 @@ func (Ah *ArticleHandler) Create(c echo.Context) error {
 
 }
 
-func (Ah *ArticleHandler) Update(c echo.Context) error {
-	var article domain.Article
+func (Ah *CategoryHandler) Update(c echo.Context) error {
+	var Category domain.Category
 	id, _ := strconv.Atoi(c.Param("id"))
 	ctx := c.Request().Context()
-	err := c.Bind(&article)
+	err := c.Bind(&Category)
 	if err != nil {
 		return helper.Response(http.StatusUnprocessableEntity, nil, nil, c)
 	}
 
-	err = Ah.ArticleUsecase.Update(ctx, int64(id), &article)
+	err = Ah.CategoryUsecase.Update(ctx, int64(id), &Category)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}
 
-	artc, err := Ah.ArticleUsecase.GetByID(ctx, int64(article.ID))
+	artc, err := Ah.CategoryUsecase.GetByID(ctx, int64(Category.ID))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}
@@ -133,10 +122,10 @@ func (Ah *ArticleHandler) Update(c echo.Context) error {
 
 }
 
-func (Ah *ArticleHandler) DeleteByID(c echo.Context) error {
+func (Ah *CategoryHandler) DeleteByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ctx := c.Request().Context()
-	message, err := Ah.ArticleUsecase.DeleteByID(ctx, int64(id))
+	message, err := Ah.CategoryUsecase.DeleteByID(ctx, int64(id))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}

@@ -28,6 +28,10 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 
 	artRepo := _repo.NewMysqlArticleRepository(db)
 	artUsecase := _usecase.NewArticleUsecase(artRepo, timeoutContext)
+
+	catRepo := _repo.NewMysqlCategoryRepository(db)
+	catUsecase := _usecase.NewcategoryUsecase(catRepo, timeoutContext)
+
 	fs := http.FileServer(http.Dir("public/build"))
 	e.GET("/*", echo.WrapHandler(fs))
 
@@ -38,6 +42,7 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 	})
 
 	NewArticleHandler(api, artUsecase)
+	NewCategoryHandler(api, catUsecase)
 
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }
