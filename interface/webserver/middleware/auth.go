@@ -16,15 +16,6 @@ type Auth struct {
 	Data interface{} `json:"data"`
 }
 
-// Errors
-var (
-	ErrJWTMissing = echo.NewHTTPError(http.StatusBadRequest, "missing or malformed jwt")
-)
-
-type (
-	jwtExtractor func(echo.Context) (string, error)
-)
-
 func (*Auth) GenerateToken(data interface{}) (string, error) {
 	claim := Auth{
 		StandardClaims: jwt.StandardClaims{
