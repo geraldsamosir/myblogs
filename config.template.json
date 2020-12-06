@@ -1,4 +1,5 @@
 {
+    "JWT_SECRET":"__JWT_SECRET__",
     "JWT_TOKEN_TTL": "__JWT_TOKEN_TTL__",
     "JWT_ISSUER": "__JWT_ISSUER__",
     "debug": true,

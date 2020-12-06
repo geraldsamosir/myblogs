@@ -14,6 +14,8 @@ func GetStatusCode(err error) int {
 
 	logrus.Error(err)
 	switch err {
+	case domain.ErrStatusUnauthorized:
+		return http.StatusUnauthorized
 	case domain.ErrInternalServerError:
 		return http.StatusInternalServerError
 	case domain.ErrNotFound:

@@ -13,7 +13,7 @@ type Category struct {
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt `sql:"index"`
 	CategoryName string         `gorm:"not null" json:"categoryName" validate:"required" query:"categoryName"`
-	Articles     []*Article     `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;foreignKey:Category`
+	Articles     []*Article     `gorm:"foreignKey:Category`
 }
 
 type CategoryUsecase interface {

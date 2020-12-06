@@ -3,7 +3,6 @@ package webserver
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/geraldsamosir/myblogs/domain"
 	"github.com/geraldsamosir/myblogs/helper"
@@ -11,15 +10,15 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var validation helper.ValidationRequest
-
 type ArticleHandler struct {
 	ArticleUsecase domain.ArticleUsecase
+	validation     helper.ValidationRequest
 }
 
-func NewArticleHandler(e *echo.Group, ArtUseCase domain.ArticleUsecase) {
+func NewArticleHandler(e *echo.Group, ArtUseCase domain.ArticleUsecase, valreq helper.ValidationRequest) {
 	handler := &ArticleHandler{
 		ArticleUsecase: ArtUseCase,
+		validation:     valreq,
 	}
 	e.GET("/Articles", handler.FindAll)
 	e.GET("/Articles/:id", handler.GetByID)
@@ -87,16 +86,14 @@ func (Ah *ArticleHandler) Create(c echo.Context) error {
 	var article domain.Article
 	ctx := c.Request().Context()
 	err := c.Bind(&article)
-	currentTime := time.Now().Format("01-02-2006")
-	article.Slug = article.Title + "-" + currentTime
 	if err != nil {
 		return helper.Response(http.StatusUnprocessableEntity, nil, nil, c)
 	}
 
-	if newErr := validation.ValidateHandling(article); newErr != nil {
+	if newErr := Ah.validation.ValidateHandling(article); newErr != nil {
 		return helper.Response(http.StatusBadRequest, nil, newErr, c)
 	}
-	err = Ah.ArticleUsecase.Create(ctx, &article)
+	err = Ah.ArticleUsecase.Create(ctx, article)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}
@@ -119,7 +116,7 @@ func (Ah *ArticleHandler) Update(c echo.Context) error {
 		return helper.Response(http.StatusUnprocessableEntity, nil, nil, c)
 	}
 
-	err = Ah.ArticleUsecase.Update(ctx, int64(id), &article)
+	err = Ah.ArticleUsecase.Update(ctx, int64(id), article)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}

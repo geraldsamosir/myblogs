@@ -65,10 +65,10 @@ func (art *articleUsecase) GetByID(c context.Context, id int64) (article domain.
 	return article, nil
 }
 
-func (art *articleUsecase) Create(c context.Context, artc *domain.Article) (err error) {
+func (art *articleUsecase) Create(c context.Context, artc domain.Article) (err error) {
 	ctx, cancel := context.WithTimeout(c, art.contextTimeout)
 	defer cancel()
-	err = art.articleRepo.Store(ctx, artc)
+	err = art.articleRepo.Store(ctx, &artc)
 	if err != nil {
 		return err
 	}
@@ -76,10 +76,14 @@ func (art *articleUsecase) Create(c context.Context, artc *domain.Article) (err 
 
 }
 
-func (art *articleUsecase) Update(ctx context.Context, id int64, artc *domain.Article) (err error) {
+func (art *articleUsecase) Update(ctx context.Context, id int64, artc domain.Article) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, art.contextTimeout)
 	defer cancel()
-	err = art.articleRepo.Update(ctx, id, artc)
+	if artc.Title != "" {
+		currentTime := time.Now().Format("01-02-2006")
+		artc.Slug = artc.Title + "-" + currentTime
+	}
+	err = art.articleRepo.Update(ctx, id, &artc)
 	if err != nil {
 		return err
 	}

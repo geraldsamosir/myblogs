@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/bxcodec/go-clean-arch v2.0.1+incompatible // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/geraldsamosir/MobileApi v0.0.0-20181024073856-17e7d5545c04 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/hashicorp/hcl v1.0.0
@@ -25,10 +26,11 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1
+	github.com/sqs/goreturns v0.0.0-20181028201513-538ac6014518 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392 // indirect
+	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c
 	golang.org/x/net v0.0.0-20201006153459-a7d1128ccaa0
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9 // indirect
 	google.golang.org/genproto v0.0.0-20191108220845-16a3f7862a1a

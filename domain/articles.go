@@ -15,18 +15,18 @@ type Article struct {
 	Title      string         `json:"title" validate:"required" query:"title"`
 	Content    string         `gorm:"type:TEXT" json:"content" validate:"required"`
 	CreatorID  uint           `gorm:"not null;index;" json:"creatorID" validate:"required"  query:"creatorID"`
-	Creator    User           `gorm:"foreignKey:CreatorID;references:ID", json:"creator"`
+	Creator    User           `gorm:"foreignKey:CreatorID;references:id" json:"creator"`
 	BannerUrl  string         `json:"bannerUrl"`
 	CategoryID uint           `gorm:"not null;index" json:"categoryID" validate:"required"  query:"category"`
-	Categories Category       `gorm:"foreignKey:CategoryID;references:id"`
+	Categories Category       `gorm:"foreignKey:CategoryID;references:ID"`
 	Slug       string         `json:"slug" query:"slug"`
 }
 type ArticleUsecase interface {
 	FindAll(ctx context.Context, page int64, limmit int64, filter Article) ([]Article, error)
 	CountPage(ctx context.Context, skip int64, limmit int64, filter Article) (res int64, err error)
 	GetByID(ctx context.Context, id int64) (article Article, err error)
-	Create(ctx context.Context, artc *Article) (err error)
-	Update(ctx context.Context, id int64, artc *Article) (err error)
+	Create(ctx context.Context, artc Article) (err error)
+	Update(ctx context.Context, id int64, artc Article) (err error)
 	DeleteByID(ctx context.Context, id int64) (message string, err error)
 }
 

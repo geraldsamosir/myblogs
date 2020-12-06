@@ -12,11 +12,13 @@ import (
 
 type CategoryHandler struct {
 	CategoryUsecase domain.CategoryUsecase
+	validation      helper.ValidationRequest
 }
 
-func NewCategoryHandler(e *echo.Group, ArtUseCase domain.CategoryUsecase) {
+func NewCategoryHandler(e *echo.Group, ArtUseCase domain.CategoryUsecase, valreq helper.ValidationRequest) {
 	handler := &CategoryHandler{
 		CategoryUsecase: ArtUseCase,
+		validation:      valreq,
 	}
 	e.GET("/Categories", handler.FindAll)
 	e.GET("/Categories/:id", handler.GetByID)
@@ -26,7 +28,7 @@ func NewCategoryHandler(e *echo.Group, ArtUseCase domain.CategoryUsecase) {
 
 }
 
-func (Ah *CategoryHandler) FindAll(c echo.Context) error {
+func (Ch *CategoryHandler) FindAll(c echo.Context) error {
 	numS := c.QueryParam("page")
 	num, _ := strconv.Atoi(numS)
 	limmits := c.QueryParam("limit")
@@ -41,13 +43,13 @@ func (Ah *CategoryHandler) FindAll(c echo.Context) error {
 		CategoryName: c.QueryParam("categoryName"),
 	}
 
-	listAr, err := Ah.CategoryUsecase.FindAll(ctx, int64(num), int64(limmit), art)
+	listAr, err := Ch.CategoryUsecase.FindAll(ctx, int64(num), int64(limmit), art)
 	if err != nil {
 		logrus.Error(err)
 		return helper.ResponseList(GetStatusCode(err), nil, err.Error(), 0, 0, c)
 	}
 
-	countAr, err := Ah.CategoryUsecase.CountPage(ctx, int64(num), int64(limmit), art)
+	countAr, err := Ch.CategoryUsecase.CountPage(ctx, int64(num), int64(limmit), art)
 	if err != nil {
 		logrus.Error(err)
 		return helper.ResponseList(GetStatusCode(err), nil, err.Error(), 0, 0, c)
@@ -60,10 +62,10 @@ func (Ah *CategoryHandler) FindAll(c echo.Context) error {
 	return helper.ResponseList(http.StatusOK, listAr, nil, num, (countAr), c)
 }
 
-func (Ah *CategoryHandler) GetByID(c echo.Context) error {
+func (Ch *CategoryHandler) GetByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ctx := c.Request().Context()
-	Category, err := Ah.CategoryUsecase.GetByID(ctx, int64(id))
+	Category, err := Ch.CategoryUsecase.GetByID(ctx, int64(id))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}
@@ -74,7 +76,7 @@ func (Ah *CategoryHandler) GetByID(c echo.Context) error {
 	return helper.Response(GetStatusCode(err), Category, nil, c)
 }
 
-func (Ah *CategoryHandler) Create(c echo.Context) error {
+func (Ch *CategoryHandler) Create(c echo.Context) error {
 	var Category domain.Category
 	ctx := c.Request().Context()
 	err := c.Bind(&Category)
@@ -82,15 +84,15 @@ func (Ah *CategoryHandler) Create(c echo.Context) error {
 		return helper.Response(http.StatusUnprocessableEntity, nil, nil, c)
 	}
 
-	if newErr := validation.ValidateHandling(Category); newErr != nil {
+	if newErr := Ch.validation.ValidateHandling(Category); newErr != nil {
 		return helper.Response(http.StatusBadRequest, nil, newErr, c)
 	}
-	err = Ah.CategoryUsecase.Create(ctx, &Category)
+	err = Ch.CategoryUsecase.Create(ctx, &Category)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}
 
-	artc, err := Ah.CategoryUsecase.GetByID(ctx, int64(Category.ID))
+	artc, err := Ch.CategoryUsecase.GetByID(ctx, int64(Category.ID))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}
@@ -99,7 +101,7 @@ func (Ah *CategoryHandler) Create(c echo.Context) error {
 
 }
 
-func (Ah *CategoryHandler) Update(c echo.Context) error {
+func (Ch *CategoryHandler) Update(c echo.Context) error {
 	var Category domain.Category
 	id, _ := strconv.Atoi(c.Param("id"))
 	ctx := c.Request().Context()
@@ -108,12 +110,12 @@ func (Ah *CategoryHandler) Update(c echo.Context) error {
 		return helper.Response(http.StatusUnprocessableEntity, nil, nil, c)
 	}
 
-	err = Ah.CategoryUsecase.Update(ctx, int64(id), &Category)
+	err = Ch.CategoryUsecase.Update(ctx, int64(id), &Category)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}
 
-	artc, err := Ah.CategoryUsecase.GetByID(ctx, int64(Category.ID))
+	artc, err := Ch.CategoryUsecase.GetByID(ctx, int64(Category.ID))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}
@@ -122,10 +124,10 @@ func (Ah *CategoryHandler) Update(c echo.Context) error {
 
 }
 
-func (Ah *CategoryHandler) DeleteByID(c echo.Context) error {
+func (Ch *CategoryHandler) DeleteByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ctx := c.Request().Context()
-	message, err := Ah.CategoryUsecase.DeleteByID(ctx, int64(id))
+	message, err := Ch.CategoryUsecase.DeleteByID(ctx, int64(id))
 	if err != nil {
 		return helper.Response(GetStatusCode(err), nil, err.Error(), c)
 	}

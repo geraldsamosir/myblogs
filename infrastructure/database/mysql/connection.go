@@ -49,8 +49,8 @@ func (database *Database) DatabaseInit() *gorm.DB {
 	// do migarion table in here
 
 	db.AutoMigrate(&domain.Category{})
-	db.AutoMigrate(&domain.Article{})
 	db.AutoMigrate(&domain.User{})
 	db.AutoMigrate(&domain.Role{})
+	db.AutoMigrate(&domain.Article{})
 	return db
 }
