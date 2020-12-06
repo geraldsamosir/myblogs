@@ -32,6 +32,9 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 	catRepo := _repo.NewMysqlCategoryRepository(db)
 	catUsecase := _usecase.NewcategoryUsecase(catRepo, timeoutContext)
 
+	roleRepo := _repo.NewMysqlRoleRepository(db)
+	roleUsecase := _usecase.NewRoleUsecase(roleRepo, timeoutContext)
+
 	fs := http.FileServer(http.Dir("public/build"))
 	e.GET("/*", echo.WrapHandler(fs))
 
@@ -43,6 +46,7 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 
 	NewArticleHandler(api, artUsecase)
 	NewCategoryHandler(api, catUsecase)
+	NewRoleHandler(api, roleUsecase)
 
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }

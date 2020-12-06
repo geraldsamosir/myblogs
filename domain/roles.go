@@ -13,7 +13,7 @@ type Role struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `sql:"index"`
 	RoleName  string         `gorm:"size:255;not null" json:"roleName" validate:"required" query:"roleName"`
-	User      []*User        `gorm:"-"`
+	Users     []*User        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;foreignKey:Role`
 }
 
 type RoleUsecase interface {
