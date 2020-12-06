@@ -53,11 +53,12 @@ func (UsrRepo *UserMysql) GetByUsername(ctx context.Context, userName string) (u
 	usr = user
 	return
 }
-func (UsrRepo *UserMysql) Store(ctx context.Context, art *domain.User) (err error) {
-	if err = UsrRepo.DB.Create(&art).Preload(clause.Associations).Preload("Articles").Preload("Role").Error; err != nil {
-		return err
+func (UsrRepo *UserMysql) Store(ctx context.Context, usr *domain.User) (user domain.User, err error) {
+	if err = UsrRepo.DB.Create(&usr).Preload(clause.Associations).Preload("Articles").Preload("Role").Error; err != nil {
+		return user, err
 	}
-	return
+	user = *usr
+	return user, nil
 }
 
 func (UsrRepo *UserMysql) Update(ctx context.Context, id int64, artc *domain.User) (err error) {

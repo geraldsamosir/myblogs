@@ -88,7 +88,7 @@ func (Uh *UserHandler) Create(c echo.Context) error {
 	if newErr := Uh.validation.ValidateHandling(User); newErr != nil {
 		return helper.Response(http.StatusBadRequest, nil, newErr, c)
 	}
-	err = Uh.UserUsecase.Register(ctx, User)
+	User, err = Uh.UserUsecase.Register(ctx, User)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}

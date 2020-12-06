@@ -75,15 +75,15 @@ func (usr *userUsecase) GetByID(c context.Context, id int64) (User domain.UserRe
 	return User, nil
 }
 
-func (usr *userUsecase) Register(c context.Context, usrc domain.User) (err error) {
+func (usr *userUsecase) Register(c context.Context, usrc domain.User) (user domain.User, err error) {
 	ctx, cancel := context.WithTimeout(c, usr.contextTimeout)
 	defer cancel()
 	usrc.Password = usr.passwordHandling.HashAndSalt([]byte(usrc.Password))
-	err = usr.UserRepo.Store(ctx, &usrc)
+	user, err = usr.UserRepo.Store(ctx, &usrc)
 	if err != nil {
-		return err
+		return user, err
 	}
-	return
+	return user, nil
 
 }
 func (usr *userUsecase) Login(ctx context.Context, user domain.Authentication) (auth domain.AuthenticationResponse, err error, errMessage string) {
