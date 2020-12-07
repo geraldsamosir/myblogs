@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -14,6 +15,41 @@ import (
 type Auth struct {
 	jwt.StandardClaims
 	Data interface{} `json:"data"`
+}
+
+type HttpMethod string
+
+const (
+	POST   HttpMethod = "POST"
+	GET    HttpMethod = "GET"
+	PUT    HttpMethod = "PUT"
+	PATCH  HttpMethod = "PATCH"
+	DELETE HttpMethod = "DELETE"
+	OPTION HttpMethod = "OPTION"
+)
+
+func (e HttpMethod) toString() string {
+	switch e {
+	case POST:
+		return "POST"
+	case GET:
+		return "GET"
+	case PUT:
+		return "PUT"
+	case PATCH:
+		return "PATCH"
+	case DELETE:
+		return "DELETE"
+	case OPTION:
+		return "OPTION"
+	default:
+		return "METHOD NOT FOUND"
+	}
+}
+
+type RouterAction struct {
+	Url    string
+	Method HttpMethod
 }
 
 func (*Auth) GenerateToken(data interface{}) (string, error) {
@@ -34,9 +70,9 @@ func (*Auth) GenerateToken(data interface{}) (string, error) {
 	return token, nil
 }
 
-func FindAllowRoutes(routes []string, val string) (int, bool) {
+func FindAllowRoutes(routes []RouterAction, url string, Method string) (int, bool) {
 	for i, item := range routes {
-		if item == val {
+		if strings.Contains(url, item.Url) && HttpMethod.toString(item.Method) == Method {
 			return i, true
 		}
 	}
@@ -46,13 +82,29 @@ func FindAllowRoutes(routes []string, val string) (int, bool) {
 func (auth *Auth) MiddlewareAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// allow routes
-		routes := []string{
-			"/api/Users/Login",
+		routes := []RouterAction{
+			RouterAction{
+				"/api/Users/Login",
+				"POST",
+			},
+			RouterAction{
+				"/api/Users",
+				"GET",
+			},
+			RouterAction{
+				"/api/Articles",
+				"GET",
+			},
+			RouterAction{
+				"/api/Roles",
+				"GET",
+			},
 		}
 
-		_, found := FindAllowRoutes(routes, c.Request().RequestURI)
+		log.Println("url", c.Request().RequestURI)
+		_, found := FindAllowRoutes(routes, c.Request().RequestURI, c.Request().Method)
 
-		if c.Request().Method == "GET" || found {
+		if found {
 			return next(c)
 		} else {
 			authorizationHeader := c.Request().Header.Get("Authorization")
