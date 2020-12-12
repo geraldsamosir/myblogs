@@ -17,5 +17,6 @@
         "DB_NAME": "__DB_NAME__"
     },
     "location": "Asia/Jakarta",
-    "Cloudinary_URL": "__Cloudinary_URL__"
+    "Cloudinary_URL": "__Cloudinary_URL__",
+    "gorutine": 2
 }

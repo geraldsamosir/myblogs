@@ -17,5 +17,6 @@
         "DB_NAME": "myblogs"
     },
     "location": "Asia/Jakarta",
-    "Cloudinary_URL": "cloudinary://345416269198618:3Rt-Y0IVbIzYKtFYKukCBHRhssE@geraldsamosir"
+    "Cloudinary_URL": "cloudinary://345416269198618:3Rt-Y0IVbIzYKtFYKukCBHRhssE@geraldsamosir",
+    "gorutine": 2
 }
