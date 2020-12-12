@@ -16,5 +16,6 @@
         "DB_PASS": "__DB_PASS__",
         "DB_NAME": "__DB_NAME__"
     },
-    "location": "Asia/Jakarta"
+    "location": "Asia/Jakarta",
+    "Cloudinary_URL": "__Cloudinary_URL__"
 }

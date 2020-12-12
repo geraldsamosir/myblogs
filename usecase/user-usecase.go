@@ -9,8 +9,6 @@ import (
 	"github.com/geraldsamosir/myblogs/helper"
 
 	"github.com/geraldsamosir/myblogs/interface/webserver/middleware"
-
-	"github.com/labstack/gommon/log"
 )
 
 type userUsecase struct {
@@ -121,9 +119,7 @@ func (usr *userUsecase) Update(ctx context.Context, id int64, usrc domain.User) 
 	ctx, cancel := context.WithTimeout(ctx, usr.contextTimeout)
 	defer cancel()
 
-	log.Info("pass", usrc.Password)
 	if usrc.Password != "" {
-		log.Info("pass", usrc.Password)
 		usrc.Password = usr.passwordHandling.HashAndSalt([]byte(usrc.Password))
 	}
 	err = usr.UserRepo.Update(ctx, id, &usrc)

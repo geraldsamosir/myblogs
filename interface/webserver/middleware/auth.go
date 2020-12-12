@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -100,8 +99,6 @@ func (auth *Auth) MiddlewareAuth(next echo.HandlerFunc) echo.HandlerFunc {
 				"GET",
 			},
 		}
-
-		log.Println("url", c.Request().RequestURI)
 		_, found := FindAllowRoutes(routes, c.Request().RequestURI, c.Request().Method)
 
 		if found {

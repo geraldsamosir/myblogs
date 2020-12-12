@@ -9,6 +9,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/hashicorp/hcl v1.0.0
 	github.com/jinzhu/gorm v1.9.16
+	github.com/komfy/cloudinary v0.0.0-20200923152107-53eda7dc4e46
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0
 	github.com/leodido/go-urn v1.2.0 // indirect

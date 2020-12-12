@@ -7,10 +7,13 @@ import (
 
 	"github.com/geraldsamosir/myblogs/helper"
 	_repo "github.com/geraldsamosir/myblogs/infrastructure/database/mysql/models"
+	_cloudinary "github.com/geraldsamosir/myblogs/infrastructure/filesystem/cloudinary"
 	_authmid "github.com/geraldsamosir/myblogs/interface/webserver/middleware"
 	_usecase "github.com/geraldsamosir/myblogs/usecase"
+	"github.com/komfy/cloudinary"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -41,6 +44,11 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 
 	userRepo := _repo.NewMysqlUserRepository(db)
 	userUsecase := _usecase.NewUserUsecase(userRepo, timeoutContext, passwordHandling, midlauth)
+	_cloudiSvc, err := cloudinary.NewService(viper.GetString("Cloudinary_URL"))
+	if err != nil {
+		logrus.Error(err)
+	}
+	cloudinyInterface := _cloudinary.NewCloudinary(_cloudiSvc)
 
 	//midleware
 	authmidl := _authmid.InitMiddleware()
@@ -59,6 +67,6 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 	NewCategoryHandler(api, catUsecase, validation)
 	NewRoleHandler(api, roleUsecase, validation)
 	NewUserHandler(api, userUsecase, validation)
-
+	NewFilesystemHandler(api, cloudinyInterface, validation)
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }
