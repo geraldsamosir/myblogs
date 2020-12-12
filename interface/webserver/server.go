@@ -42,11 +42,17 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 	}))
 
 	e.Use(middleware.SecureWithConfig(middleware.SecureConfig{
-		XSSProtection:      "",
-		ContentTypeNosniff: "",
-		XFrameOptions:      "",
-		HSTSMaxAge:         3600,
-		//ContentSecurityPolicy: "default-src 'self'",
+		Skipper: func(c echo.Context) bool {
+			if strings.Contains(c.Request().URL.Path, "swagger") {
+				return true
+			}
+			return false
+		},
+		XSSProtection:         "",
+		ContentTypeNosniff:    "",
+		XFrameOptions:         "",
+		HSTSMaxAge:            3600,
+		ContentSecurityPolicy: "default-src 'self'",
 	}))
 	var validation helper.ValidationRequest
 	var passwordHandling helper.Password
