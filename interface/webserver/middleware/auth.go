@@ -98,6 +98,14 @@ func (auth *Auth) MiddlewareAuth(next echo.HandlerFunc) echo.HandlerFunc {
 				"/api/Roles",
 				"GET",
 			},
+			RouterAction{
+				"/api/",
+				"GET",
+			},
+			RouterAction{
+				"/api",
+				"GET",
+			},
 		}
 		_, found := FindAllowRoutes(routes, c.Request().RequestURI, c.Request().Method)
 
