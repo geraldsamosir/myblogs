@@ -44,11 +44,11 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 
 	userRepo := _repo.NewMysqlUserRepository(db)
 	userUsecase := _usecase.NewUserUsecase(userRepo, timeoutContext, passwordHandling, midlauth)
-	_cloudiSvc, err := cloudinary.NewService(viper.GetString("Cloudinary_URL"))
+	cloudiSvc, err := cloudinary.NewService(viper.GetString("Cloudinary_URL"))
 	if err != nil {
 		logrus.Error(err)
 	}
-	cloudinyInterface := _cloudinary.NewCloudinary(_cloudiSvc)
+	cloudinyInterface := _cloudinary.NewCloudinary(cloudiSvc)
 
 	//midleware
 	authmidl := _authmid.InitMiddleware()
