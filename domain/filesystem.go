@@ -5,7 +5,7 @@ import (
 )
 
 type FileSystem struct {
-	Filename *[]multipart.FileHeader `json:"files" validate:"required"`
+	Filename []*multipart.FileHeader `json:"files" validate:"required"`
 }
 
 type FileUsecase interface {

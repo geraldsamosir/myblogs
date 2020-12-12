@@ -1,6 +1,7 @@
 package webserver
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/geraldsamosir/myblogs/domain"
@@ -22,17 +23,19 @@ func NewFilesystemHandler(e *echo.Group, fileUsecase domain.FileUsecase, valreq 
 
 }
 func (fh *FileHandler) Uploads(c echo.Context) error {
-	// var filesys domain.FileSystem
+	var filesys domain.FileSystem
 	form, err := c.MultipartForm()
 	if err != nil {
-		return helper.Response(http.StatusBadRequest, nil, err, c)
+		return helper.Response(http.StatusBadRequest, nil, errors.New("your form is empty"), c)
 	}
-
-	// if newErr := fh.validation.ValidateHandling(filesys); newErr != nil {
-	// 	return helper.Response(http.StatusBadRequest, nil, newErr, c)
-	// }
 	files := form.File["Filename"]
-	urls, err := fh.fileSistemUsecase.UploadMultipleFiles(files)
+	filesys = domain.FileSystem{
+		Filename: files,
+	}
+	if newErr := fh.validation.ValidateHandling(filesys); newErr != nil {
+		return helper.Response(http.StatusBadRequest, nil, newErr, c)
+	}
+	urls, err := fh.fileSistemUsecase.UploadMultipleFiles(filesys.Filename)
 	if err != nil {
 		return helper.Response(http.StatusBadRequest, nil, err, c)
 	}
