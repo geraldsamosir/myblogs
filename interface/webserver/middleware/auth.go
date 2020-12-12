@@ -7,7 +7,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/geraldsamosir/myblogs/helper"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 )
 

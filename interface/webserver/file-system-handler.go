@@ -6,7 +6,7 @@ import (
 
 	"github.com/geraldsamosir/myblogs/domain"
 	"github.com/geraldsamosir/myblogs/helper"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type FileHandler struct {
