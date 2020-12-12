@@ -3,6 +3,7 @@ package webserver
 import (
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/geraldsamosir/myblogs/helper"
@@ -46,14 +47,21 @@ func (ws *Webserver) RunWebserver(db *gorm.DB) {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+		Skipper: func(c echo.Context) bool {
+			if strings.Contains(c.Request().URL.Path, "swagger") {
+				return true
+			}
+			return false
+		},
 		Level: 5,
 	}))
+
 	e.Use(middleware.SecureWithConfig(middleware.SecureConfig{
-		XSSProtection:         "",
-		ContentTypeNosniff:    "",
-		XFrameOptions:         "",
-		HSTSMaxAge:            3600,
-		ContentSecurityPolicy: "default-src 'self'",
+		XSSProtection:      "",
+		ContentTypeNosniff: "",
+		XFrameOptions:      "",
+		HSTSMaxAge:         3600,
+		//ContentSecurityPolicy: "default-src 'self'",
 	}))
 	var validation helper.ValidationRequest
 	var passwordHandling helper.Password
